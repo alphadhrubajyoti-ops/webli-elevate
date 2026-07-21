@@ -198,20 +198,6 @@ function Hero() {
   );
 }
 
-function TrustBar() {
-  return (
-    <div className="mx-auto max-w-7xl px-6">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-10 border-y border-border/60">
-        {stats.map((s) => (
-          <div key={s.l} className="text-center">
-            <div className="text-3xl sm:text-4xl font-bold gradient-text">{s.k}</div>
-            <div className="mt-1 text-xs sm:text-sm text-muted-foreground uppercase tracking-wider">{s.l}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function About() {
   return (
