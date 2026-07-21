@@ -42,12 +42,6 @@ const services = [
   { icon: ShieldCheck, title: "Care & optimisation", desc: "Ongoing performance, SEO and reliability — hands-off for you." },
 ];
 
-const stats = [
-  { k: "120+", l: "Sites shipped" },
-  { k: "98", l: "Avg. Lighthouse" },
-  { k: "3.4×", l: "Avg. conv. lift" },
-  { k: "12", l: "Days avg. launch" },
-];
 
 const why = [
   { icon: Zap, title: "Blazing performance", desc: "Sub-second loads, perfect Core Web Vitals, and clean, semantic code." },
@@ -87,7 +81,7 @@ function HomePage() {
     <div className="min-h-dvh bg-background text-foreground">
       <FloatingNav />
       <Hero />
-      <TrustBar />
+      
       <About />
       <Services />
       <Packages />
