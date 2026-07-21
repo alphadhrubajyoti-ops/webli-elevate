@@ -1,10 +1,11 @@
 import { createFileRoute, Link, Outlet, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Package as PackageIcon, ShoppingBag, Users, Settings, LogOut, Menu, X, Home } from "lucide-react";
+import { LayoutDashboard, Package as PackageIcon, ShoppingBag, Users, Settings, LogOut, Menu, X, Home, Lock, Mail, Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/webli/useAuth";
 import { isAdminUser } from "@/lib/webli/queries";
+import { ensureFixedAdmin } from "@/lib/webli/admin-bootstrap.functions";
 import { WebliLogo } from "@/components/webli/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,9 @@ export const Route = createFileRoute("/admin")({
   component: AdminLayout,
   head: () => ({ meta: [{ title: "Admin · Webli" }, { name: "robots", content: "noindex" }] }),
 });
+
+const ADMIN_EMAIL = "alpha.dhrubajyoti@gmail.com";
+const ADMIN_PASSWORD = "WB9609022523";
 
 const nav = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -32,6 +36,7 @@ function AdminLayout() {
 
   useEffect(() => {
     if (!user) { setIsAdmin(false); return; }
+    setIsAdmin(null);
     isAdminUser(user.id).then(setIsAdmin);
   }, [user]);
 
@@ -40,12 +45,10 @@ function AdminLayout() {
   if (loading || (user && isAdmin === null)) {
     return <div className="min-h-dvh grid place-items-center text-muted-foreground">Loading…</div>;
   }
-  if (!user) return <AdminLoginPrompt />;
-  if (!isAdmin) return <NotAdmin userEmail={user.email ?? ""} />;
+  if (!user || !isAdmin) return <AdminLogin />;
 
   return (
     <div className="min-h-dvh bg-secondary/30 flex">
-      {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 bg-sidebar border-r border-sidebar-border transition-all duration-300
         ${collapsed ? "w-[76px]" : "w-64"}
@@ -90,7 +93,6 @@ function AdminLayout() {
         </div>
       </aside>
 
-      {/* Main */}
       <div className={`flex-1 min-w-0 transition-[margin] ${collapsed ? "md:ml-[76px]" : "md:ml-64"}`}>
         <header className="sticky top-0 z-30 h-16 glass border-b border-border/60 flex items-center gap-3 px-5">
           <button className="md:hidden" onClick={() => setMobileOpen(true)}><Menu className="h-5 w-5" /></button>
@@ -123,72 +125,105 @@ function AdminLayout() {
   );
 }
 
-function AdminLoginPrompt() {
-  return (
-    <div className="min-h-dvh grid place-items-center bg-background p-6">
-      <div className="glass rounded-3xl p-10 max-w-md w-full text-center">
-        <h1 className="text-2xl font-semibold">Admin sign-in required</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Please sign in with an administrator account to access the admin panel.
-        </p>
-        <Link to="/login" className="mt-6 inline-block">
-          <Button className="rounded-full gradient-primary text-primary-foreground">Sign in</Button>
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function NotAdmin({ userEmail }: { userEmail: string }) {
-  const [key, setKey] = useState("");
-  const [loading, setLoading] = useState(false);
+function AdminLogin() {
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const bootstrap = async (e: React.FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data: existing, error: chkErr } = await supabase.from("user_roles").select("id").eq("role", "admin").limit(1);
-      if (chkErr) throw chkErr;
-      if ((existing?.length ?? 0) > 0) {
-        toast.error("An administrator already exists. Ask them to promote you.");
-        return;
+      if (user) await supabase.auth.signOut();
+
+      const emailTrim = email.trim();
+      if (emailTrim.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
+        // Idempotently ensure the fixed admin exists with this password + role.
+        await ensureFixedAdmin();
       }
-      if (key !== "webli-admin") {
-        toast.error("Invalid setup key.");
-        return;
-      }
-      const { data: { user: cur } } = await supabase.auth.getUser();
-      if (!cur) throw new Error("Not signed in");
-      const { error } = await supabase.from("user_roles").insert({ user_id: cur.id, role: "admin" });
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: emailTrim,
+        password,
+      });
       if (error) throw error;
-      toast.success("You're now the administrator.");
+
+      toast.success("Welcome, Administrator");
       navigate({ to: "/admin", replace: true });
-      setTimeout(() => location.reload(), 200);
+      setTimeout(() => location.reload(), 150);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed");
-    } finally { setLoading(false); }
-  };
+      toast.error(err instanceof Error ? err.message : "Invalid administrator credentials");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <div className="min-h-dvh grid place-items-center bg-background p-6">
-      <div className="glass rounded-3xl p-10 max-w-md w-full">
-        <h1 className="text-2xl font-semibold">Admin access required</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Signed in as <strong>{userEmail}</strong>. This account isn't an administrator.
+    <div className="min-h-dvh grid place-items-center bg-background p-6 relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 gradient-primary opacity-[0.06]" />
+      <div className="glass rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-elev animate-fade-up">
+        <div className="flex items-center justify-center">
+          <div className="h-14 w-14 rounded-2xl gradient-primary grid place-items-center shadow-elev">
+            <ShieldCheck className="h-7 w-7 text-primary-foreground" />
+          </div>
+        </div>
+        <h1 className="mt-5 text-2xl font-semibold text-center tracking-tight">Administrator sign in</h1>
+        <p className="mt-2 text-sm text-muted-foreground text-center">
+          Restricted access. Authorized personnel only.
         </p>
-        <div className="my-6 h-px bg-border" />
-        <form onSubmit={bootstrap} className="space-y-3">
-          <p className="text-xs text-muted-foreground">
-            First-time setup: if no administrator exists yet, enter the setup key <code className="font-mono bg-muted px-1 py-0.5 rounded">webli-admin</code> to claim this account as the admin.
-          </p>
-          <Label>Setup key</Label>
-          <Input value={key} onChange={(e) => setKey(e.target.value)} placeholder="Enter setup key" />
-          <Button type="submit" disabled={loading} className="w-full rounded-full gradient-primary text-primary-foreground">
-            Claim admin access
+
+        <form onSubmit={submit} className="mt-8 space-y-4">
+          <div className="space-y-2">
+            <Label>Email</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                className="pl-9 h-11"
+                placeholder="admin@webli.com"
+                required
+                autoComplete="username"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Password</Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                className="pl-9 h-11"
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+              />
+            </div>
+          </div>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full h-11 rounded-full gradient-primary text-primary-foreground shadow-elev"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign in to Admin"}
           </Button>
         </form>
-        <div className="mt-4 flex justify-between text-xs">
-          <Link to="/" className="text-muted-foreground hover:text-foreground">← Back</Link>
-          <button onClick={() => supabase.auth.signOut()} className="text-muted-foreground hover:text-foreground">Sign out</button>
+
+        <div className="mt-6 flex justify-between text-xs">
+          <Link to="/" className="text-muted-foreground hover:text-foreground">← Back to site</Link>
+          {user && (
+            <button
+              onClick={async () => { await supabase.auth.signOut(); toast.success("Signed out"); }}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Sign out
+            </button>
+          )}
         </div>
       </div>
     </div>
