@@ -3,7 +3,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/webli/useAuth";
 import { WebliLogo } from "@/components/webli/Logo";
 import { Button } from "@/components/ui/button";
