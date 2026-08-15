@@ -63,27 +63,18 @@ function LoginPage() {
       </div>
     );
   }
-async function google() {
-  setLoading(true);
-
-  try {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "https://weblii.netlify.app",
-      },
-    });
-
-    if (error) {
-      toast.error(error.message);
-      return;
+  async function google() {
+    setLoading(true);
+    try {
+      const { lovable } = await import("@/integrations/lovable");
+      await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Google sign-in failed");
+      setLoading(false);
     }
-  } catch (err) {
-    toast.error(err instanceof Error ? err.message : "Google sign-in failed");
-  } finally {
-    setLoading(false);
   }
-}
 
   async function emailSubmit(e: React.FormEvent) {
     e.preventDefault();

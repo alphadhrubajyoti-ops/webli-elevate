@@ -1,28 +1,53 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, MessageCircle, PackageOpen, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchPublishedPackages, type Package } from "@/lib/webli/queries";
+import { getPublishedPackages } from "@/lib/webli/packages.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { whatsappUrl } from "@/lib/webli/constants";
 
 export function PackagesGrid() {
   const [pkgs, setPkgs] = useState<Package[] | null>(null);
+  const loadServer = useServerFn(getPublishedPackages);
 
   useEffect(() => {
     let mounted = true;
-    fetchPublishedPackages().then((d) => mounted && setPkgs(d)).catch(() => mounted && setPkgs([]));
+
+    // Server-side read first (works for everyone, signed in or not, and is
+    // immune to browser-side network/CORS hiccups), then fall back to the
+    // browser client.
+    const load = async () => {
+      try {
+        const data = (await loadServer({})) as unknown as Package[];
+        if (mounted) setPkgs(data);
+        return;
+      } catch {
+        /* fall through */
+      }
+      try {
+        const data = await fetchPublishedPackages();
+        if (mounted) setPkgs(data);
+      } catch {
+        if (mounted) setPkgs((p) => p ?? []);
+      }
+    };
+
+    void load();
+
     const ch = supabase
       .channel("public-packages")
       .on("postgres_changes", { event: "*", schema: "public", table: "packages" }, () => {
-        fetchPublishedPackages().then((d) => mounted && setPkgs(d)).catch(() => {});
+        void load();
       })
       .subscribe();
     return () => {
       mounted = false;
       supabase.removeChannel(ch);
     };
-  }, []);
+  }, [loadServer]);
+
 
   if (pkgs === null) {
     return (

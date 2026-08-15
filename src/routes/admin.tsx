@@ -139,15 +139,20 @@ function AdminLogin() {
       if (user) await supabase.auth.signOut();
 
       const emailTrim = email.trim();
-      if (emailTrim.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
-        // Idempotently ensure the fixed admin exists with this password + role.
-        await ensureFixedAdmin();
-      }
+      const isFixedAdmin =
+        emailTrim.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD;
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: emailTrim,
-        password,
-      });
+      let { error } = await supabase.auth.signInWithPassword({ email: emailTrim, password });
+
+      // Only if the fixed admin can't sign in yet, provision the account and retry.
+      if (error && isFixedAdmin) {
+        try {
+          await ensureFixedAdmin();
+        } catch {
+          /* provisioning is best-effort */
+        }
+        ({ error } = await supabase.auth.signInWithPassword({ email: emailTrim, password }));
+      }
       if (error) throw error;
 
       toast.success("Welcome, Administrator");
@@ -159,6 +164,7 @@ function AdminLogin() {
       setLoading(false);
     }
   }
+
 
   return (
     <div className="min-h-dvh grid place-items-center bg-background p-6 relative overflow-hidden">
