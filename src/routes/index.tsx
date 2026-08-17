@@ -25,6 +25,7 @@ import {
 import { FloatingNav } from "@/components/webli/FloatingNav";
 import { Footer } from "@/components/webli/Footer";
 import { Section } from "@/components/webli/Section";
+import { Founder } from "@/components/webli/Founder";
 import { PackagesGrid } from "@/components/webli/PackagesGrid";
 import { WebliLogo } from "@/components/webli/Logo";
 import { whatsappUrl, WHATSAPP_NUMBER, CONTACT_EMAIL } from "@/lib/webli/constants";
@@ -87,6 +88,7 @@ function HomePage() {
       <Packages />
       <Portfolio />
       <WhyChoose />
+      <Founder />
       <Testimonials />
       <FAQ />
       <Contact />
