@@ -87,6 +87,7 @@ function HomePage() {
       <Packages />
       <Portfolio />
       <WhyChoose />
+      <Founder />
       <Testimonials />
       <FAQ />
       <Contact />
