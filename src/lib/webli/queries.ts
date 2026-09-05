@@ -34,6 +34,18 @@ export type Order = {
   updated_at: string;
 };
 
+export type Review = {
+  id: string;
+  user_id: string | null;
+  name: string;
+  role: string | null;
+  content: string;
+  rating: number;
+  is_approved: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export async function fetchPublishedPackages(): Promise<Package[]> {
   const { data, error } = await supabase
     .from("packages")
@@ -77,6 +89,15 @@ export async function fetchAllOrders(): Promise<Order[]> {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Order[];
+}
+
+export async function fetchAllReviews(): Promise<Review[]> {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as Review[];
 }
 
 export async function isAdminUser(userId: string | undefined): Promise<boolean> {

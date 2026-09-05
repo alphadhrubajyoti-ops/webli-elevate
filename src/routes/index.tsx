@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Check,
   Mail,
+  Quote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,13 +26,23 @@ import {
 import { FloatingNav } from "@/components/webli/FloatingNav";
 import { Footer } from "@/components/webli/Footer";
 import { Section } from "@/components/webli/Section";
-import { Founder } from "@/components/webli/Founder";
 import { PackagesGrid } from "@/components/webli/PackagesGrid";
+import { ReviewSection } from "@/components/webli/ReviewSection";
 import { WebliLogo } from "@/components/webli/Logo";
 import { whatsappUrl, WHATSAPP_NUMBER, CONTACT_EMAIL } from "@/lib/webli/constants";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
+  head: () => ({
+    meta: [
+      { title: "WEBLI — Premium Website Agency" },
+      { name: "description", content: "WEBLI designs and builds polished, high-performing websites for ambitious brands." },
+      { property: "og:title", content: "WEBLI — Premium Website Agency" },
+      { property: "og:description", content: "Distinctive websites, thoughtful design, and dependable engineering from WEBLI." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
 });
 
 const services = [
@@ -51,24 +62,6 @@ const why = [
   { icon: Sparkles, title: "Delightful details", desc: "Micro-interactions and typography that make your brand feel premium." },
 ];
 
-const testimonials = [
-  {
-    quote: "Webli delivered a site that outperformed our previous one on every metric. Ten out of ten.",
-    author: "Ananya Rao",
-    role: "Founder, Northline Studio",
-  },
-  {
-    quote: "Fast, opinionated, and genuinely design-led. Our launch page converted 4× the previous version.",
-    author: "Marcus Bell",
-    role: "Head of Growth, Cascade",
-  },
-  {
-    quote: "The most professional agency I've worked with. Clean handover and a site I'm proud to send around.",
-    author: "Priya Malhotra",
-    role: "CEO, Loom & Co.",
-  },
-];
-
 const faqs = [
   { q: "How long does a typical project take?", a: "Landing pages ship in 5–10 days. Full marketing sites take 3–5 weeks. E-commerce and web apps are scoped individually." },
   { q: "Do you handle hosting and maintenance?", a: "Yes. Every project ships on a modern, globally-cached hosting stack, and we offer optional care plans for ongoing updates, monitoring, and SEO." },
@@ -86,10 +79,8 @@ function HomePage() {
       <About />
       <Services />
       <Packages />
-      <Portfolio />
       <WhyChoose />
-      <Founder />
-      <Testimonials />
+       <ReviewSection />
       <FAQ />
       <Contact />
       <Footer />
@@ -148,10 +139,10 @@ function Hero() {
                 </div>
                 <div className="col-span-9 grid grid-rows-6 gap-3">
                   <div className="row-span-2 grid grid-cols-3 gap-3">
-                    {[0, 1, 2].map((i) => (
-                      <div key={i} className="glass rounded-2xl p-4 flex flex-col justify-between">
+                    {["Design", "Build", "Launch"].map((label) => (
+                      <div key={label} className="glass rounded-2xl p-4 flex flex-col justify-between">
                         <div className="h-2 w-1/2 rounded-full bg-primary/20" />
-                        <div className="text-2xl font-bold gradient-text">{["98", "3.4×", "12d"][i]}</div>
+                        <div className="text-xl font-bold gradient-text">{label}</div>
                       </div>
                     ))}
                   </div>
@@ -177,7 +168,7 @@ function Hero() {
                       <path d="M0 90 C 60 80 90 40 140 50 S 240 100 290 60 S 360 20 400 30" fill="none" stroke="#1976FF" strokeWidth="2.5" strokeLinecap="round" />
                     </svg>
                     <div className="absolute bottom-4 right-4 glass rounded-full px-3 py-1 text-xs font-semibold">
-                      +342% conversions
+                      built around your goals
                     </div>
                   </div>
                 </div>
@@ -186,12 +177,12 @@ function Hero() {
           </div>
           <div className="absolute -top-6 -left-6 hidden md:block glass rounded-2xl p-4 animate-float shadow-elev">
             <div className="flex items-center gap-2 text-sm font-semibold">
-              <Zap className="h-4 w-4 text-primary" /> Perfect Lighthouse
+              <Zap className="h-4 w-4 text-primary" /> Performance-minded
             </div>
           </div>
           <div className="absolute -bottom-6 -right-6 hidden md:block glass rounded-2xl p-4 animate-float shadow-elev" style={{ animationDelay: "-3s" }}>
             <div className="flex items-center gap-2 text-sm font-semibold">
-              <Star className="h-4 w-4 text-primary" /> 5.0 client rating
+              <Star className="h-4 w-4 text-primary" /> Detail-oriented craft
             </div>
           </div>
         </div>
@@ -270,43 +261,6 @@ function Packages() {
   );
 }
 
-function Portfolio() {
-  const items = [
-    { title: "Northline Studio", tag: "Marketing site", grad: "from-blue-500 to-indigo-500" },
-    { title: "Cascade", tag: "SaaS landing", grad: "from-sky-500 to-cyan-500" },
-    { title: "Loom & Co.", tag: "E-commerce", grad: "from-indigo-500 to-violet-500" },
-    { title: "Atlas Freight", tag: "Web app", grad: "from-blue-600 to-blue-400" },
-  ];
-  return (
-    <Section
-      id="portfolio"
-      eyebrow="Selected work"
-      title="Recent launches."
-      subtitle="A snapshot of brands we've helped ship polished, high-performing digital experiences."
-    >
-      <div className="grid gap-5 md:grid-cols-2">
-        {items.map((it, i) => (
-          <div
-            key={it.title}
-            className="group relative aspect-[16/10] rounded-3xl overflow-hidden glass hover:shadow-elev transition-all"
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            <div className={`absolute inset-0 bg-gradient-to-br ${it.grad} opacity-90`} />
-            <div className="absolute inset-0 bg-[radial-gradient(600px_200px_at_50%_100%,white,transparent)] opacity-20" />
-            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white">
-              <div className="text-xs font-semibold uppercase tracking-widest opacity-80">{it.tag}</div>
-              <div className="mt-1 text-2xl font-semibold">{it.title}</div>
-            </div>
-            <div className="absolute top-6 right-6 h-10 w-10 rounded-full glass grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <ArrowRight className="h-4 w-4 text-primary" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
 function WhyChoose() {
   return (
     <Section
@@ -324,35 +278,6 @@ function WhyChoose() {
             <h3 className="mt-5 text-lg font-semibold">{w.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{w.desc}</p>
           </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-function Testimonials() {
-  return (
-    <Section
-      id="testimonials"
-      eyebrow="Testimonials"
-      title="Loved by founders and teams."
-    >
-      <div className="grid gap-6 md:grid-cols-3">
-        {testimonials.map((t) => (
-          <figure key={t.author} className="glass rounded-3xl p-8 flex flex-col">
-            <div className="flex gap-1 text-primary">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-primary" />
-              ))}
-            </div>
-            <blockquote className="mt-4 text-foreground/90 text-lg leading-relaxed">
-              "{t.quote}"
-            </blockquote>
-            <figcaption className="mt-6 pt-6 border-t border-border/60">
-              <div className="font-semibold">{t.author}</div>
-              <div className="text-sm text-muted-foreground">{t.role}</div>
-            </figcaption>
-          </figure>
         ))}
       </div>
     </Section>

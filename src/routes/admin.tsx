@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Package as PackageIcon, ShoppingBag, Users, Settings, LogOut, Menu, X, Home, Lock, Mail, Loader2, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Package as PackageIcon, ShoppingBag, Users, Settings, LogOut, Menu, X, Home, Lock, Mail, Loader2, ShieldCheck, MessageSquareQuote } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/webli/useAuth";
@@ -24,6 +24,7 @@ const nav = [
   { to: "/admin/packages", label: "Packages", icon: PackageIcon },
   { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { to: "/admin/customers", label: "Customers", icon: Users },
+  { to: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
