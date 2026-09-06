@@ -46,6 +46,19 @@ export type Review = {
   updated_at: string;
 };
 
+export type Demo = {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  url: string | null;
+  image_url: string | null;
+  is_published: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export async function fetchPublishedPackages(): Promise<Package[]> {
   const { data, error } = await supabase
     .from("packages")
@@ -55,6 +68,27 @@ export async function fetchPublishedPackages(): Promise<Package[]> {
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []).map(normalizePkg);
+}
+
+export async function fetchPublishedDemos(): Promise<Demo[]> {
+  const { data, error } = await supabase
+    .from("demos")
+    .select("*")
+    .eq("is_published", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as Demo[];
+}
+
+export async function fetchAllDemos(): Promise<Demo[]> {
+  const { data, error } = await supabase
+    .from("demos")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as Demo[];
 }
 
 export async function fetchAllPackages(): Promise<Package[]> {
