@@ -3,12 +3,6 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
-type WorkerEnv = {
-  SUPABASE_URL?: string;
-  SUPABASE_PUBLISHABLE_KEY?: string;
-  [key: string]: unknown;
-};
-
 type ServerEntry = {
   fetch: (
     request: Request,
@@ -29,6 +23,8 @@ async function getServerEntry(): Promise<ServerEntry> {
   return serverEntryPromise;
 }
 
+// h3 swallows in-handler throws into a normal 500 Response with body
+// {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
 async function normalizeCatastrophicSsrResponse(
   response: Response,
 ): Promise<Response> {
@@ -78,24 +74,6 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
-      /*
-       * Cloudflare Workers provides environment variables
-       * through the `env` argument.
-       *
-       * Make them available to the existing TanStack/Supabase
-       * server functions through process.env.
-       */
-      const workerEnv = env as WorkerEnv;
-
-      if (typeof workerEnv.SUPABASE_URL === "string") {
-        process.env.SUPABASE_URL = workerEnv.SUPABASE_URL;
-      }
-
-      if (typeof workerEnv.SUPABASE_PUBLISHABLE_KEY === "string") {
-        process.env.SUPABASE_PUBLISHABLE_KEY =
-          workerEnv.SUPABASE_PUBLISHABLE_KEY;
-      }
-
       const handler = await getServerEntry();
 
       const response = await handler.fetch(
