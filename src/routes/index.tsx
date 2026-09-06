@@ -28,6 +28,7 @@ import { Footer } from "@/components/webli/Footer";
 import { Section } from "@/components/webli/Section";
 import { PackagesGrid } from "@/components/webli/PackagesGrid";
 import { ReviewSection } from "@/components/webli/ReviewSection";
+import { DemoShowcase } from "@/components/webli/DemoShowcase";
 import { WebliLogo } from "@/components/webli/Logo";
 import { whatsappUrl, WHATSAPP_NUMBER, CONTACT_EMAIL } from "@/lib/webli/constants";
 
@@ -78,6 +79,7 @@ function HomePage() {
       
       <About />
       <Services />
+      <DemoShowcase />
       <Packages />
       <WhyChoose />
        <ReviewSection />
@@ -200,13 +202,13 @@ function About() {
       title={<>A studio, not a factory.</>}
       subtitle="We're a small team of designers and engineers who care deeply about craft. Every project is led end-to-end by senior people — no juniors, no handoffs, no compromise."
     >
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-12">
         {[
           { t: "Design-led", d: "Every pixel considered. Every interaction intentional." },
           { t: "Engineered right", d: "Clean, semantic, accessible code — built to last." },
           { t: "Honest & fast", d: "Fixed timelines. Clear scope. No surprises, ever." },
-        ].map((x) => (
-          <div key={x.t} className="glass rounded-3xl p-8 hover:shadow-elev transition-shadow">
+        ].map((x, index) => (
+          <div key={x.t} className={`${index === 0 ? "md:col-span-5" : "md:col-span-7"} glass rounded-3xl p-8 hover:shadow-elev transition-shadow`}>
             <div className="h-10 w-10 rounded-2xl gradient-primary grid place-items-center shadow-elev">
               <Check className="h-5 w-5 text-primary-foreground" />
             </div>

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Package as PackageIcon, ShoppingBag, Users, Settings, LogOut, Menu, X, Home, Lock, Mail, Loader2, ShieldCheck, MessageSquareQuote } from "lucide-react";
+import { LayoutDashboard, Package as PackageIcon, ShoppingBag, Users, Settings, LogOut, Menu, X, Home, Lock, Mail, Loader2, ShieldCheck, MessageSquareQuote, GalleryHorizontalEnd } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/webli/useAuth";
@@ -22,6 +22,7 @@ const ADMIN_PASSWORD = "WB9609022523";
 const nav = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/packages", label: "Packages", icon: PackageIcon },
+  { to: "/admin/demos", label: "Demo websites", icon: GalleryHorizontalEnd },
   { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { to: "/admin/customers", label: "Customers", icon: Users },
   { to: "/admin/reviews", label: "Reviews", icon: MessageSquareQuote },
