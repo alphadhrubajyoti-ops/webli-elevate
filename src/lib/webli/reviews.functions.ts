@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import { env } from "cloudflare:workers";
 import type { Database } from "@/integrations/supabase/types";
 
 const reviewSchema = z.object({
@@ -29,9 +30,9 @@ const reviewSchema = z.object({
     .max(5),
 });
 
-function publicClient() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+function getSupabaseClient() {
+  const url = env.SUPABASE_URL;
+  const key = env.SUPABASE_PUBLISHABLE_KEY;
 
   if (!url) {
     throw new Error("SUPABASE_URL is not configured.");
@@ -73,14 +74,17 @@ function publicClient() {
 export const getApprovedReviews = createServerFn({
   method: "GET",
 }).handler(async () => {
-  const { data, error } = await publicClient()
+  const supabase = getSupabaseClient();
+
+  const { data, error } = await supabase
     .from("reviews")
     .select("id, name, role, content, rating, created_at")
     .eq("is_approved", true)
     .order("created_at", { ascending: false });
 
   if (error) {
-    throw error;
+    console.error("Failed to load reviews:", error);
+    throw new Error("Failed to load reviews.");
   }
 
   return data ?? [];
@@ -91,18 +95,19 @@ export const submitReview = createServerFn({
 })
   .inputValidator((input: unknown) => reviewSchema.parse(input))
   .handler(async ({ data }) => {
-    const { error } = await publicClient()
-      .from("reviews")
-      .insert({
-        name: data.name,
-        role: data.role || null,
-        content: data.content,
-        rating: data.rating,
-        is_approved: false,
-      });
+    const supabase = getSupabaseClient();
+
+    const { error } = await supabase.from("reviews").insert({
+      name: data.name,
+      role: data.role || null,
+      content: data.content,
+      rating: data.rating,
+      is_approved: false,
+    });
 
     if (error) {
-      throw error;
+      console.error("Failed to submit review:", error);
+      throw new Error("Failed to submit review.");
     }
 
     return {
