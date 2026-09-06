@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      demos: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          is_published: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           business_category: string | null
