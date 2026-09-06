@@ -30,15 +30,15 @@ const reviewSchema = z.object({
 });
 
 function publicClient() {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
 
   if (!url) {
-    throw new Error("VITE_SUPABASE_URL is not configured.");
+    throw new Error("SUPABASE_URL is not configured.");
   }
 
   if (!key) {
-    throw new Error("VITE_SUPABASE_PUBLISHABLE_KEY is not configured.");
+    throw new Error("SUPABASE_PUBLISHABLE_KEY is not configured.");
   }
 
   return createClient<Database>(url, key, {
@@ -52,8 +52,6 @@ function publicClient() {
       fetch: (input, init) => {
         const headers = new Headers(init?.headers);
 
-        // Supabase publishable keys use the apikey header.
-        // Do not send the publishable key as a Bearer token.
         if (
           key.startsWith("sb_") &&
           headers.get("Authorization") === `Bearer ${key}`
@@ -75,9 +73,7 @@ function publicClient() {
 export const getApprovedReviews = createServerFn({
   method: "GET",
 }).handler(async () => {
-  const supabase = publicClient();
-
-  const { data, error } = await supabase
+  const { data, error } = await publicClient()
     .from("reviews")
     .select("id, name, role, content, rating, created_at")
     .eq("is_approved", true)
@@ -95,15 +91,15 @@ export const submitReview = createServerFn({
 })
   .inputValidator((input: unknown) => reviewSchema.parse(input))
   .handler(async ({ data }) => {
-    const supabase = publicClient();
-
-    const { error } = await supabase.from("reviews").insert({
-      name: data.name,
-      role: data.role || null,
-      content: data.content,
-      rating: data.rating,
-      is_approved: false,
-    });
+    const { error } = await publicClient()
+      .from("reviews")
+      .insert({
+        name: data.name,
+        role: data.role || null,
+        content: data.content,
+        rating: data.rating,
+        is_approved: false,
+      });
 
     if (error) {
       throw error;
