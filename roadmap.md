@@ -1,0 +1,4 @@
+- [ ] Add public demo website showcase with category filtering and visitor-safe loading
+- [ ] Add admin demo management page with create, edit, publish/hide, and delete controls
+- [ ] Add showcase navigation and refresh the homepage composition around the new work section
+- [ ] Verify build, runtime, and responsive public/admin states
