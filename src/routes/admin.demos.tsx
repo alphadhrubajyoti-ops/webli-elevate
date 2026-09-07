@@ -32,8 +32,14 @@ function DemosAdmin() {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const load = () => fetchAllDemos().then(setDemos).catch(() => setDemos([]));
+  const load = () => fetchAllDemos().then(setDemos).catch(() => toast.error("Could not load demo websites."));
   useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const channel = supabase.channel("admin-demos")
+      .on("postgres_changes", { event: "*", schema: "public", table: "demos" }, () => void load())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
   const filtered = useMemo(() => demos.filter((demo) => `${demo.title} ${demo.category}`.toLowerCase().includes(query.toLowerCase())), [demos, query]);
 
   function edit(demo?: Demo) {
