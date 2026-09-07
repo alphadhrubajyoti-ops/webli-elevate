@@ -11,12 +11,14 @@ const fallbackCategories = ["All"];
 
 export function DemoShowcase() {
   const [demos, setDemos] = useState<Demo[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState("All");
   const loadServer = useServerFn(getPublishedDemos);
 
   useEffect(() => {
     let mounted = true;
     const load = async () => {
+      setError(null);
       try {
         const data = await loadServer({});
         if (mounted) setDemos(data as Demo[]);
@@ -26,7 +28,10 @@ export function DemoShowcase() {
           const data = await fetchPublishedDemos();
           if (mounted) setDemos(data);
         } catch {
-          if (mounted) setDemos((current) => current ?? []);
+          if (mounted) {
+            setDemos(null);
+            setError("Demo websites could not be loaded right now.");
+          }
         }
       }
     };
@@ -60,10 +65,19 @@ export function DemoShowcase() {
       subtitle="Explore live-ready concepts and demo websites, organised by the kind of experience they create."
       className="bg-secondary/35"
     >
-      {demos === null ? (
+      {demos === null && error === null ? (
         <div className="grid gap-5 md:grid-cols-12">
           <div className="md:col-span-7 h-[360px] rounded-[2rem] bg-card animate-pulse" />
           <div className="md:col-span-5 h-[360px] rounded-[2rem] bg-card animate-pulse" />
+        </div>
+      ) : error ? (
+        <div className="rounded-[2rem] border border-dashed border-primary/25 bg-card/70 px-6 py-16 text-center">
+          <FolderOpen className="mx-auto h-10 w-10 text-primary/70" />
+          <h3 className="mt-5 text-2xl font-semibold tracking-tight">We could not load the demo websites</h3>
+          <p className="mx-auto mt-2 max-w-lg text-muted-foreground">Please try again in a moment.</p>
+          <Button type="button" variant="outline" className="mt-6 rounded-full" onClick={() => window.location.reload()}>
+            Try again
+          </Button>
         </div>
       ) : demos.length === 0 ? (
         <div className="rounded-[2rem] border border-dashed border-primary/25 bg-card/70 px-6 py-16 text-center">

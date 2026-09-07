@@ -18,6 +18,12 @@ function ReviewsAdmin() {
   }
 
   useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const channel = supabase.channel("admin-reviews")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reviews" }, () => void load())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   async function approve(review: Review) {
     const { error } = await supabase.from("reviews").update({ is_approved: true }).eq("id", review.id);

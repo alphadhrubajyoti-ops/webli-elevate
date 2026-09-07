@@ -10,6 +10,7 @@ import { whatsappUrl } from "@/lib/webli/constants";
 
 export function PackagesGrid() {
   const [pkgs, setPkgs] = useState<Package[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const loadServer = useServerFn(getPublishedPackages);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export function PackagesGrid() {
     // immune to browser-side network/CORS hiccups), then fall back to the
     // browser client.
     const load = async () => {
+      setError(null);
       try {
         const data = (await loadServer({})) as unknown as Package[];
         if (mounted) setPkgs(data);
@@ -30,7 +32,10 @@ export function PackagesGrid() {
         const data = await fetchPublishedPackages();
         if (mounted) setPkgs(data);
       } catch {
-        if (mounted) setPkgs((p) => p ?? []);
+        if (mounted) {
+          setPkgs(null);
+          setError("Packages could not be loaded right now.");
+        }
       }
     };
 
@@ -49,12 +54,25 @@ export function PackagesGrid() {
   }, [loadServer]);
 
 
-  if (pkgs === null) {
+  if (pkgs === null && error === null) {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {[0, 1, 2].map((i) => (
           <div key={i} className="glass rounded-3xl h-[420px] animate-pulse" />
         ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="glass rounded-3xl p-12 text-center">
+        <PackageOpen className="mx-auto h-10 w-10 text-primary/70" />
+        <h3 className="mt-4 text-xl font-semibold">We could not load the packages</h3>
+        <p className="mt-2 text-muted-foreground">Please try again in a moment.</p>
+        <Button type="button" variant="outline" className="mt-6 rounded-full" onClick={() => window.location.reload()}>
+          Try again
+        </Button>
       </div>
     );
   }

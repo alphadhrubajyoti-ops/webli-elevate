@@ -42,8 +42,14 @@ function PackagesAdmin() {
   const [form, setForm] = useState<FormState>(empty);
   const [saving, setSaving] = useState(false);
 
-  const load = () => fetchAllPackages().then(setPkgs).catch(() => setPkgs([]));
+  const load = () => fetchAllPackages().then(setPkgs).catch(() => toast.error("Could not load packages."));
   useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const channel = supabase.channel("admin-packages")
+      .on("postgres_changes", { event: "*", schema: "public", table: "packages" }, () => void load())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const filtered = useMemo(
     () => pkgs.filter((p) => p.title.toLowerCase().includes(q.toLowerCase())),

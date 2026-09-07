@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Section } from "@/components/webli/Section";
 import { getApprovedReviews, submitReview } from "@/lib/webli/reviews.functions";
 import type { Review } from "@/lib/webli/queries";
+import { useServerFn } from "@tanstack/react-start";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name.").max(80, "Name is too long."),
@@ -24,10 +26,33 @@ export function ReviewSection() {
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(5);
   const [saving, setSaving] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const loadReviews = useServerFn(getApprovedReviews);
+  const saveReview = useServerFn(submitReview);
 
   useEffect(() => {
-    getApprovedReviews().then((rows) => setReviews(rows as Review[])).catch(() => setReviews([]));
-  }, []);
+    let mounted = true;
+    const load = async () => {
+      try {
+        const rows = await loadReviews({});
+        if (mounted) {
+          setReviews(rows as Review[]);
+          setLoadError(false);
+        }
+      } catch {
+        if (mounted) setLoadError(true);
+      }
+    };
+    void load();
+    const channel = supabase
+      .channel("public-reviews")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reviews" }, () => void load())
+      .subscribe();
+    return () => {
+      mounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, [loadReviews]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,7 +63,7 @@ export function ReviewSection() {
     }
     setSaving(true);
     try {
-      await submitReview({ data: parsed.data });
+      await saveReview({ data: parsed.data });
       setName("");
       setRole("");
       setContent("");
@@ -55,7 +80,15 @@ export function ReviewSection() {
     <Section id="reviews" eyebrow="Client reviews" title="What people say after working with WEBLI." subtitle="Real words from real clients. Every review is checked before it appears here.">
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] items-start">
         <div className="grid gap-4">
-          {reviews.length === 0 ? (
+          {loadError ? (
+            <div className="glass rounded-3xl p-8 min-h-56 grid place-items-center text-center">
+              <div>
+                <Quote className="mx-auto h-8 w-8 text-primary/60" />
+                <p className="mt-4 font-medium">Reviews could not be loaded.</p>
+                <p className="mt-1 text-sm text-muted-foreground">Please refresh and try again.</p>
+              </div>
+            </div>
+          ) : reviews.length === 0 ? (
             <div className="glass rounded-3xl p-8 min-h-56 grid place-items-center text-center">
               <div>
                 <Quote className="mx-auto h-8 w-8 text-primary/60" />
