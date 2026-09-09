@@ -5,9 +5,11 @@ import type { Database } from "@/integrations/supabase/types";
 // Public read of published packages. Runs on the server with the publishable
 // key so the landing page shows packages for everyone, signed in or not.
 export const getPublishedPackages = createServerFn({ method: "GET" }).handler(async () => {
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"] ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const url = process.env["SUPABASE_URL"] ?? import.meta.env.VITE_SUPABASE_URL;
+  if (!url || !key) throw new Error("Database connection is not configured.");
   const supabasePublic = createClient<Database>(
-    process.env["SUPABASE_URL"]!,
+    url,
     key,
     {
       auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
