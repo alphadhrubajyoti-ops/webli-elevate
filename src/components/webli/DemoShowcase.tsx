@@ -79,7 +79,9 @@ export function DemoShowcase() {
             Try again
           </Button>
         </div>
-      ) : demos.length === 0 ? (
+      ) : null}
+
+      {demos !== null && !error && demos.length === 0 ? (
         <div className="rounded-[2rem] border border-dashed border-primary/25 bg-card/70 px-6 py-16 text-center">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl gradient-primary shadow-elev">
             <FolderOpen className="h-6 w-6 text-primary-foreground" />
@@ -89,7 +91,9 @@ export function DemoShowcase() {
             We’re preparing a collection of demo websites. Check back soon to explore the work.
           </p>
         </div>
-      ) : (
+      ) : null}
+
+      {demos !== null && !error && demos.length > 0 ? (
         <>
           <div className="mb-8 flex flex-wrap items-center gap-2">
             {categories.map((item) => (
@@ -111,7 +115,7 @@ export function DemoShowcase() {
             ))}
           </div>
         </>
-      )}
+      ) : null}
     </Section>
   );
 }
