@@ -77,6 +77,10 @@ export function PackagesGrid() {
     );
   }
 
+  if (pkgs === null) {
+    return null;
+  }
+
   if (pkgs.length === 0) {
     return (
       <div className="glass rounded-3xl p-12 md:p-16 text-center">
