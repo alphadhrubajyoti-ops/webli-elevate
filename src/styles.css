@@ -1,24 +1,34 @@
-@import "tailwindcss" source(none);
-@source "../src";
+
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
+:root {
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #374151;
+  --muted: #f9fafb;
+  --muted-foreground: #6b7280;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
+  --destructive: #dc2626;
+  --border: #e5e7eb;
+  --input: #d1d5db;
+  --ring: #93c5fd;
+  --radius: 8px;
+}
+
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -28,196 +38,271 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --font-sans: Arial, Helvetica, sans-serif;
 }
 
-:root {
-  --radius: 0.75rem;
-  --background: #f8fafc;
-  --foreground: #172033;
-  --ink: #172033;
-  --card: #ffffff;
-  --card-foreground: #172033;
-  --popover: #ffffff;
-  --popover-foreground: #172033;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #eef2f7;
-  --secondary-foreground: #243047;
-  --muted: #f1f5f9;
-  --muted-foreground: #667085;
-  --accent: #eff6ff;
-  --accent-foreground: #1d4ed8;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #d7deea;
-  --ring: #93b4ff;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #172033;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eff6ff;
-  --sidebar-accent-foreground: #1d4ed8;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #93b4ff;
-  --gradient-primary: #2563eb;
-  --gradient-hero: #f8fafc;
-  --shadow-soft: 0 2px 8px rgb(15 23 42 / 0.04);
-  --shadow-card: 0 8px 24px rgb(15 23 42 / 0.06);
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
 }
 
-.dark {
-  --background: #0f172a;
-  --foreground: #e5eaf3;
-  --ink: #e5eaf3;
-  --card: #172033;
-  --card-foreground: #e5eaf3;
-  --popover: #172033;
-  --popover-foreground: #e5eaf3;
-  --primary: #60a5fa;
-  --primary-foreground: #0b1220;
-  --secondary: #202b40;
-  --secondary-foreground: #e5eaf3;
-  --muted: #202b40;
-  --muted-foreground: #a4afc2;
-  --accent: #1e3154;
-  --accent-foreground: #dbeafe;
-  --border: #2b3850;
-  --input: #2b3850;
-  --ring: #60a5fa;
-  --sidebar: #111a2c;
-  --sidebar-foreground: #e5eaf3;
-  --sidebar-primary: #60a5fa;
-  --sidebar-primary-foreground: #0b1220;
-  --sidebar-accent: #1e3154;
-  --sidebar-accent-foreground: #dbeafe;
-  --sidebar-border: #2b3850;
-  --sidebar-ring: #60a5fa;
+html {
+  scroll-behavior: smooth;
 }
 
-@layer base {
-  * { border-color: var(--border); }
-  html {
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-  body {
-    margin: 0;
-    background: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.6;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    color: var(--foreground);
-    letter-spacing: -0.035em;
-    line-height: 1.2;
-    font-weight: 650;
-  }
-  p { color: inherit; }
-  a { color: inherit; text-decoration: none; }
-  button, input, textarea, select { font: inherit; }
-  button { cursor: pointer; }
-  img, svg { max-width: 100%; }
-  ::selection { background: #dbeafe; color: #1e3a8a; }
-  :focus-visible {
-    outline: 3px solid rgb(37 99 235 / 0.28);
-    outline-offset: 2px;
-  }
-}
-
-/* Keep existing utility class names working while removing the heavy gradients. */
-@utility glass {
-  background: rgb(255 255 255 / 0.92);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
-}
-@utility glass-dark {
-  background: rgb(23 32 51 / 0.92);
-  border: 1px solid rgb(255 255 255 / 0.12);
-}
-@utility gradient-text {
-  color: var(--primary);
-}
-@utility gradient-primary {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-@utility gradient-hero-bg {
+body {
+  margin: 0;
   background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  color: #111827;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+p {
+  color: #4b5563;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: #1d4ed8;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Buttons */
+
+button,
+[role="button"] {
+  transition: background-color 0.15s ease,
+              border-color 0.15s ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Form fields */
+
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  color: #1f2937;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #2563eb;
+  outline: 2px solid #dbeafe;
+}
+
+/* Cards and panels */
+
+[class*="rounded-"][class*="border"],
+[data-slot="card"] {
+  border-color: #e5e7eb;
+}
+
+[class*="shadow-"] {
+  --tw-shadow-color: rgb(17 24 39 / 0.05);
+}
+
+/* Keep old utility classes compatible */
+
+@utility glass {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.03);
+}
+
+@utility glass-dark {
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+@utility gradient-text {
+  color: #2563eb;
+}
+
+@utility gradient-primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+@utility gradient-hero-bg {
+  background: #f9fafb;
+}
+
 @utility shadow-elev {
-  box-shadow: 0 8px 20px rgb(37 99 235 / 0.12);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.06);
 }
+
 @utility shadow-card-soft {
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.04);
 }
+
 @utility ring-focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.18);
+  outline: 2px solid #dbeafe;
+  outline-offset: 2px;
 }
+
 @utility animate-float {
   animation: none;
 }
-@utility animate-fade-up {
-  animation: fade-up 0.35s ease-out both;
-}
+
 @utility animate-blob {
   animation: none;
 }
 
+@utility animate-fade-up {
+  animation: fade-up 0.25s ease-out;
+}
+
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Common elements */
-.container, [class*="max-w-"] { box-sizing: border-box; }
-::placeholder { color: #98a2b3; opacity: 1; }
-input, textarea, select {
-  color: var(--foreground);
-}
-input:not([type="checkbox"]):not([type="radio"]),
-textarea, select {
-  border-radius: 0.6rem;
-}
-input:focus, textarea:focus, select:focus {
-  outline: none;
+/* Tables */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
 }
 
-/* Clean card styling across services, packages, demos, reviews and admin panels. */
-[class*="rounded-"][class*="border"],
-[data-slot="card"] {
-  border-color: var(--border);
+th {
+  background: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  text-align: left;
 }
-[class*="shadow-"] {
-  --tw-shadow-color: rgb(15 23 42 / 0.05);
+
+th, td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
 }
-button, [role="button"] {
-  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+
+tr:hover td {
+  background: #fafafa;
 }
-button:active, [role="button"]:active {
-  transform: translateY(1px);
+
+/* Scrollbars */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
 }
+
+/* Mobile layout */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  th, td {
+    padding: 9px 10px;
+  }
+}
+
+/* Accessibility */
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition: none !important;
   }
 }
