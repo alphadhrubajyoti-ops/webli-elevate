@@ -4,23 +4,34 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* =========================
+   1. BASIC THEME
+========================= */
+
 :root {
   --background: #ffffff;
   --foreground: #1f2937;
+
   --card: #ffffff;
   --card-foreground: #1f2937;
+
   --primary: #2563eb;
   --primary-foreground: #ffffff;
-  --secondary: #f3f4f6;
-  --secondary-foreground: #374151;
-  --muted: #f9fafb;
-  --muted-foreground: #6b7280;
+
+  --secondary: #f3f6fb;
+  --secondary-foreground: #1f2937;
+
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+
   --accent: #eff6ff;
   --accent-foreground: #1d4ed8;
+
   --destructive: #dc2626;
   --border: #e5e7eb;
   --input: #d1d5db;
   --ring: #93c5fd;
+
   --radius: 8px;
 }
 
@@ -41,12 +52,18 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
   --radius-xl: 12px;
+
   --font-sans: Arial, Helvetica, sans-serif;
 }
+
+/* =========================
+   2. GLOBAL STYLING
+========================= */
 
 * {
   box-sizing: border-box;
@@ -55,6 +72,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 75px;
 }
 
 body {
@@ -67,11 +85,48 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: #111827;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* =========================
+   3. HEADINGS
+========================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  color: #172554;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
 }
 
 h1 {
@@ -83,116 +138,147 @@ h2 {
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
 }
 
 p {
-  color: #4b5563;
+  color: #526078;
 }
 
-a {
+/* =========================
+   4. FULL-WIDTH HEADER
+========================= */
+
+/* Remove unwanted rounding and gaps from common header wrappers. */
+header {
+  width: 100%;
+  margin-top: 0;
+}
+
+/* Apply only to the header's outermost container. */
+header > div {
+  border-radius: 0;
+}
+
+/* Keep existing navigation links neat. */
+nav a {
+  transition: color 0.2s ease;
+}
+
+nav a:hover {
   color: var(--primary);
-  text-decoration: none;
 }
 
-a:hover {
-  color: #1d4ed8;
-}
-
-button {
-  cursor: pointer;
-  font: inherit;
-}
-
-button,
-input,
-textarea,
-select {
-  font-family: inherit;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid #93c5fd;
-  outline-offset: 2px;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Buttons */
+/* =========================
+   5. BUTTONS
+========================= */
 
 button,
 [role="button"] {
-  transition: background-color 0.15s ease,
-              border-color 0.15s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+button:active,
+[role="button"]:active {
+  transform: scale(0.98);
 }
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
-/* Form fields */
+/* =========================
+   6. FORM FIELDS
+========================= */
 
 input:not([type="checkbox"]):not([type="radio"]),
 textarea,
 select {
-  width: 100%;
   max-width: 100%;
-  min-height: 42px;
-  padding: 10px 12px;
-  color: #1f2937;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--input);
   border-radius: 6px;
+  background: #ffffff;
+  color: #1f2937;
   font-size: 14px;
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: #2563eb;
+  border-color: var(--primary);
   outline: 2px solid #dbeafe;
+  outline-offset: 0;
 }
 
-/* Cards and panels */
+textarea {
+  resize: vertical;
+}
 
-[class*="rounded-"][class*="border"],
+/* =========================
+   7. SIMPLE CARDS
+========================= */
+
 [data-slot="card"] {
-  border-color: #e5e7eb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: 0 2px 5px rgb(15 23 42 / 3%);
 }
 
+/* No heavy shadows on normal card elements. */
 [class*="shadow-"] {
-  --tw-shadow-color: rgb(17 24 39 / 0.05);
+  --tw-shadow-color: rgb(15 23 42 / 4%);
 }
 
-/* Keep old utility classes compatible */
+/* =========================
+   8. SMALLER DEMO WEBSITES
+========================= */
+
+/* Keep demo previews within their card. */
+iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+  background: #f8fafc;
+}
+
+/* Prevent images and previews from overflowing. */
+[class*="demo"] img,
+[class*="Demo"] img {
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Keep preview images tidy without forcing card sizes. */
+[class*="demo"] img,
+[class*="Demo"] img {
+  max-height: 190px;
+}
+
+/* =========================
+   9. OLD UTILITY COMPATIBILITY
+========================= */
 
 @utility glass {
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.03);
+  box-shadow: 0 2px 5px rgb(15 23 42 / 3%);
 }
 
 @utility glass-dark {
-  background: #1f2937;
-  border: 1px solid #374151;
+  background: #1e293b;
+  border: 1px solid #334155;
 }
 
 @utility gradient-text {
@@ -205,20 +291,40 @@ select:focus {
 }
 
 @utility gradient-hero-bg {
-  background: #f9fafb;
+  background: #f8fafc;
 }
 
 @utility shadow-elev {
-  box-shadow: 0 4px 12px rgb(0 0 0 / 0.06);
+  box-shadow: 0 4px 12px rgb(15 23 42 / 6%);
 }
 
 @utility shadow-card-soft {
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.04);
+  box-shadow: 0 2px 6px rgb(15 23 42 / 4%);
 }
 
 @utility ring-focus {
   outline: 2px solid #dbeafe;
   outline-offset: 2px;
+}
+
+/* =========================
+   10. SUBTLE ANIMATIONS
+========================= */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.35s ease-out both;
 }
 
 @utility animate-float {
@@ -229,53 +335,31 @@ select:focus {
   animation: none;
 }
 
-@utility animate-fade-up {
-  animation: fade-up 0.25s ease-out;
-}
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Tables */
+/* =========================
+   11. TABLES
+========================= */
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
 }
 
-th {
-  background: #f9fafb;
-  color: #374151;
-  font-weight: 600;
+th,
+td {
+  padding: 11px 13px;
+  border-bottom: 1px solid #e5e7eb;
   text-align: left;
 }
 
-th, td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #e5e7eb;
+th {
+  background: #f8fafc;
+  color: #334155;
+  font-weight: 700;
 }
 
-tr:hover td {
-  background: #fafafa;
-}
-
-/* Scrollbars */
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #d1d5db transparent;
-}
-
-/* Mobile layout */
+/* =========================
+   12. MOBILE COMPATIBILITY
+========================= */
 
 @media (max-width: 768px) {
   body {
@@ -287,22 +371,75 @@ tr:hover td {
   }
 
   h2 {
-    font-size: 1.6rem;
+    font-size: 1.55rem;
   }
 
-  th, td {
-    padding: 9px 10px;
+  /* Prevent content from exceeding phone width. */
+  main,
+  section,
+  article {
+    max-width: 100%;
+  }
+
+  /* Keep cards compact on smaller screens. */
+  [data-slot="card"] {
+    border-radius: 8px;
+  }
+
+  /* Let wide tables scroll rather than break the page. */
+  table {
+    min-width: 560px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  /* Make media fit phone screens. */
+  iframe {
+    max-width: 100%;
+  }
+
+  /* Reduce excessive spacing from common utilities. */
+  .container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
 
-/* Accessibility */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  button {
+    max-width: 100%;
+  }
+}
+
+/* =========================
+   13. ACCESSIBILITY
+========================= */
+
+:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    animation: none !important;
-    transition: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
