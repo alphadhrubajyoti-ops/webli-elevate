@@ -3,3 +3,6 @@
 - [x] Add showcase navigation and refresh the homepage composition around the new work section
 - [x] Verify build, runtime, and responsive public/admin states
 - [x] Fix public package, demo, and review loading states and live refresh behavior
+- [ ] Audit all public and admin pages, navigation, forms, and backend calls; fix confirmed functional defects
+- [ ] Verify public package and demo access, review submission/ratings, and guest order confirmation end to end
+- [ ] Check responsive behavior and browser/network/build signals; report any remaining external blockers
