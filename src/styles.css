@@ -1,320 +1,71 @@
 
-@import "tailwindcss";
-@import "tw-animate-css";
+/* ==============================
+   WEBLI — HEADER & MOBILE POLISH
+================================ */
 
-@custom-variant dark (&:is(.dark *));
-
-/* =========================
-   1. BASIC THEME
-========================= */
-
-:root {
-  --background: #ffffff;
-  --foreground: #1f2937;
-
-  --card: #ffffff;
-  --card-foreground: #1f2937;
-
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-
-  --secondary: #f3f6fb;
-  --secondary-foreground: #1f2937;
-
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-
-  --accent: #eff6ff;
-  --accent-foreground: #1d4ed8;
-
-  --destructive: #dc2626;
-  --border: #e5e7eb;
-  --input: #d1d5db;
-  --ring: #93c5fd;
-
-  --radius: 8px;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-
-  --font-sans: Arial, Helvetica, sans-serif;
-}
-
-/* =========================
-   2. GLOBAL STYLING
-========================= */
-
-* {
-  box-sizing: border-box;
-  border-color: var(--border);
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 75px;
-}
-
-body {
-  margin: 0;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-::selection {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-/* =========================
-   3. HEADINGS
-========================= */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-top: 0;
-  color: #172554;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
-}
-
-h1 {
-  font-size: clamp(2rem, 4vw, 3rem);
-}
-
-h2 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-}
-
-h3 {
-  font-size: 1.15rem;
-}
-
-p {
-  color: #526078;
-}
-
-/* =========================
-   4. FULL-WIDTH HEADER
-========================= */
-
-/* Remove unwanted rounding and gaps from common header wrappers. */
+/* Simple, rectangular header */
 header {
+  position: relative;
   width: 100%;
-  margin-top: 0;
+  max-width: 100%;
+  margin: 0;
+  border-radius: 0 !important;
 }
 
-/* Apply only to the header's outermost container. */
+/* Remove capsule styling from header containers */
+header > div,
+header nav,
+header [class*="rounded-full"] {
+  border-radius: 0 !important;
+}
+
+/* Keep header content aligned and readable */
 header > div {
-  border-radius: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
-/* Keep existing navigation links neat. */
-nav a {
-  transition: color 0.2s ease;
+/* Subtle blue gradient for primary buttons */
+button[class*="bg-primary"],
+a[class*="bg-primary"],
+.bg-gradient-to-r {
+  background-image: linear-gradient(
+    100deg,
+    #2563eb 0%,
+    #3478ed 100%
+  );
 }
 
-nav a:hover {
-  color: var(--primary);
-}
-
-/* =========================
-   5. BUTTONS
-========================= */
-
-button,
-[role="button"] {
+/* Simple hover animation */
+button:hover,
+[role="button"]:hover {
   transition:
-    background-color 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease,
-    transform 0.18s ease;
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
-button:active,
-[role="button"]:active {
-  transform: scale(0.98);
+button:hover:not(:disabled) {
+  box-shadow: 0 3px 9px rgb(37 99 235 / 12%);
 }
 
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-/* =========================
-   6. FORM FIELDS
-========================= */
-
-input:not([type="checkbox"]):not([type="radio"]),
-textarea,
-select {
-  max-width: 100%;
-  border: 1px solid var(--input);
-  border-radius: 6px;
-  background: #ffffff;
-  color: #1f2937;
-  font-size: 14px;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: #94a3b8;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: var(--primary);
-  outline: 2px solid #dbeafe;
-  outline-offset: 0;
-}
-
-textarea {
-  resize: vertical;
-}
-
-/* =========================
-   7. SIMPLE CARDS
-========================= */
-
+/* Smooth appearance for existing cards */
 [data-slot="card"] {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--card);
-  box-shadow: 0 2px 5px rgb(15 23 42 / 3%);
+  animation: webli-appear 0.35s ease both;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-/* No heavy shadows on normal card elements. */
-[class*="shadow-"] {
-  --tw-shadow-color: rgb(15 23 42 / 4%);
+[data-slot="card"]:hover {
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 5%);
 }
 
-/* =========================
-   8. SMALLER DEMO WEBSITES
-========================= */
-
-/* Keep demo previews within their card. */
-iframe {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  border: 0;
-  background: #f8fafc;
-}
-
-/* Prevent images and previews from overflowing. */
-[class*="demo"] img,
-[class*="Demo"] img {
-  width: 100%;
-  object-fit: cover;
-}
-
-/* Keep preview images tidy without forcing card sizes. */
-[class*="demo"] img,
-[class*="Demo"] img {
-  max-height: 190px;
-}
-
-/* =========================
-   9. OLD UTILITY COMPATIBILITY
-========================= */
-
-@utility glass {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 5px rgb(15 23 42 / 3%);
-}
-
-@utility glass-dark {
-  background: #1e293b;
-  border: 1px solid #334155;
-}
-
-@utility gradient-text {
-  color: #2563eb;
-}
-
-@utility gradient-primary {
-  background: #2563eb;
-  color: #ffffff;
-}
-
-@utility gradient-hero-bg {
-  background: #f8fafc;
-}
-
-@utility shadow-elev {
-  box-shadow: 0 4px 12px rgb(15 23 42 / 6%);
-}
-
-@utility shadow-card-soft {
-  box-shadow: 0 2px 6px rgb(15 23 42 / 4%);
-}
-
-@utility ring-focus {
-  outline: 2px solid #dbeafe;
-  outline-offset: 2px;
-}
-
-/* =========================
-   10. SUBTLE ANIMATIONS
-========================= */
-
-@keyframes fade-up {
+@keyframes webli-appear {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
 
   to {
@@ -323,123 +74,82 @@ iframe {
   }
 }
 
-@utility animate-fade-up {
-  animation: fade-up 0.35s ease-out both;
-}
-
-@utility animate-float {
-  animation: none;
-}
-
-@utility animate-blob {
-  animation: none;
-}
-
-/* =========================
-   11. TABLES
-========================= */
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 11px 13px;
-  border-bottom: 1px solid #e5e7eb;
-  text-align: left;
-}
-
-th {
-  background: #f8fafc;
-  color: #334155;
-  font-weight: 700;
-}
-
-/* =========================
-   12. MOBILE COMPATIBILITY
-========================= */
-
+/* Phone and tablet layout */
 @media (max-width: 768px) {
-  body {
-    font-size: 14px;
+  header {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    padding: 0;
   }
 
-  h1 {
-    font-size: 2rem;
-  }
-
-  h2 {
-    font-size: 1.55rem;
-  }
-
-  /* Prevent content from exceeding phone width. */
-  main,
-  section,
-  article {
-    max-width: 100%;
-  }
-
-  /* Keep cards compact on smaller screens. */
-  [data-slot="card"] {
-    border-radius: 8px;
-  }
-
-  /* Let wide tables scroll rather than break the page. */
-  table {
-    min-width: 560px;
-  }
-
-  table {
-    display: block;
-    overflow-x: auto;
-  }
-
-  /* Make media fit phone screens. */
-  iframe {
-    max-width: 100%;
-  }
-
-  /* Reduce excessive spacing from common utilities. */
-  .container {
+  header > div {
     width: 100%;
     max-width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.75rem;
+    padding-left: 14px;
+    padding-right: 14px;
   }
 
-  h2 {
-    font-size: 1.4rem;
+  /* Prevent page content from overflowing */
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
-  button {
+  main,
+  section {
+    max-width: 100%;
+  }
+
+  /* Make touch controls easier to use */
+  button,
+  [role="button"] {
+    min-height: 40px;
+  }
+
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+  }
+
+  /* Let demo grids adapt to smaller screens */
+  [class*="grid"] {
+    min-width: 0;
+  }
+
+  iframe {
+    width: 100%;
     max-width: 100%;
   }
 }
 
-/* =========================
-   13. ACCESSIBILITY
-========================= */
+/* Smaller phones */
+@media (max-width: 480px) {
+  header > div {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 
-:focus-visible {
-  outline: 2px solid #60a5fa;
-  outline-offset: 2px;
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.45rem;
+  }
 }
 
+/* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
+    animation: none !important;
+    transition: none !important;
     scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }
