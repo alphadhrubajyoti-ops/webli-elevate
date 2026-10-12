@@ -1,4 +1,5 @@
 import { useState } from "react";
+import introVideo from "../../assets/webli-intro.mp4";
 
 export default function FloatingVideo() {
   const [visible, setVisible] = useState(true);
@@ -21,12 +22,12 @@ export default function FloatingVideo() {
       {videoError ? (
         <div className="webli-video-error">
           <strong>Video could not load</strong>
-          <span>Check the video file path in GitHub.</span>
+          <span>Please check the MP4 file.</span>
         </div>
       ) : (
         <video
           className="webli-video-player"
-          src="/videos/webli-intro.mp4"
+          src={introVideo}
           autoPlay
           muted={muted}
           loop
