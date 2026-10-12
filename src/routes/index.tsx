@@ -126,6 +126,25 @@ function Hero() {
           </div>
         </div>
 
+
+        {/* Temporary Durga Puja Sale Poster */}
+        <div className="relative mt-10 sm:mt-14 mx-auto max-w-5xl animate-fade-up">
+          <a
+            href="/book"
+            aria-label="Explore Webli website packages"
+            className="block overflow-hidden rounded-2xl shadow-elev"
+          >
+            <img
+              src="https://yt3.ggpht.com/HIm8QkwImdCgIh3sBWqS3ZRC-rKqQ-BpGDAu-OuutyEoFvuz9kTa3CYIDyFfmRA5_u_EXqgRN7u8=s640-c-fcrop64=1,00000000ffffffff-rw-nd-v1"
+              alt="Webli Durga Puja Sale"
+              className="block w-full h-auto object-contain"
+              loading="eager"
+            />
+          </a>
+        </div>
+
+
+        
         {/* Hero illustration / product mock */}
         <div className="relative mt-16 sm:mt-24 mx-auto max-w-5xl animate-fade-up" style={{ animationDelay: "150ms" }}>
           <div className="glass rounded-[2rem] p-3 shadow-elev">
