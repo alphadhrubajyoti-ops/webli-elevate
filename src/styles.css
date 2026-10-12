@@ -501,3 +501,55 @@
   }
 }
 
+
+.webli-floating-video {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 240px;
+  z-index: 9999;
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.webli-floating-video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+}
+
+.webli-video-close,
+.webli-video-sound {
+  position: absolute;
+  z-index: 2;
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  background: #fff;
+  color: #111;
+}
+
+.webli-video-close {
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+}
+
+.webli-video-sound {
+  bottom: 8px;
+  right: 8px;
+}
+
+@media (max-width: 600px) {
+  .webli-floating-video {
+    width: 145px;
+    right: 10px;
+    bottom: 12px;
+  }
+}
+
+
