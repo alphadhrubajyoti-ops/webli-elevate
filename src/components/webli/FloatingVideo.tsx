@@ -1,15 +1,16 @@
-
 import { useState } from "react";
 
 export default function FloatingVideo() {
   const [visible, setVisible] = useState(true);
   const [muted, setMuted] = useState(true);
+  const [videoError, setVideoError] = useState(false);
 
   if (!visible) return null;
 
   return (
     <div className="webli-floating-video">
       <button
+        type="button"
         className="webli-video-close"
         onClick={() => setVisible(false)}
         aria-label="Close video"
@@ -17,20 +18,34 @@ export default function FloatingVideo() {
         ×
       </button>
 
-      <video
-        src="/videos/webli-intro.mp4"
-        autoPlay
-        muted={muted}
-        loop
-        playsInline
-      />
+      {videoError ? (
+        <div className="webli-video-error">
+          <strong>Video could not load</strong>
+          <span>Check the video file path in GitHub.</span>
+        </div>
+      ) : (
+        <video
+          className="webli-video-player"
+          src="/videos/webli-intro.mp4"
+          autoPlay
+          muted={muted}
+          loop
+          playsInline
+          preload="auto"
+          onError={() => setVideoError(true)}
+        />
+      )}
 
-      <button
-        className="webli-video-sound"
-        onClick={() => setMuted((value) => !value)}
-      >
-        {muted ? "Unmute" : "Mute"}
-      </button>
+      {!videoError && (
+        <button
+          type="button"
+          className="webli-video-sound"
+          onClick={() => setMuted((value) => !value)}
+          aria-label={muted ? "Unmute video" : "Mute video"}
+        >
+          {muted ? "Unmute" : "Mute"}
+        </button>
+      )}
     </div>
   );
 }
