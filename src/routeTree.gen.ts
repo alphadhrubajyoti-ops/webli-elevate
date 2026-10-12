@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SalesRouteImport } from './routes/sales'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as BookRouteImport } from './routes/book'
@@ -16,12 +17,18 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSalesRouteImport } from './routes/admin.sales'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminPackagesRouteImport } from './routes/admin.packages'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminDemosRouteImport } from './routes/admin.demos'
 import { Route as AdminCustomersRouteImport } from './routes/admin.customers'
 
+const SalesRoute = SalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersRoute = OrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
@@ -57,6 +64,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSalesRoute = AdminSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminReviewsRoute = AdminReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
@@ -89,11 +101,13 @@ export interface FileRoutesByFullPath {
   '/book': typeof BookRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
+  '/sales': typeof SalesRoute
   '/admin/customers': typeof AdminCustomersRoute
   '/admin/demos': typeof AdminDemosRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -102,11 +116,13 @@ export interface FileRoutesByTo {
   '/book': typeof BookRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
+  '/sales': typeof SalesRoute
   '/admin/customers': typeof AdminCustomersRoute
   '/admin/demos': typeof AdminDemosRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -117,11 +133,13 @@ export interface FileRoutesById {
   '/book': typeof BookRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
+  '/sales': typeof SalesRoute
   '/admin/customers': typeof AdminCustomersRoute
   '/admin/demos': typeof AdminDemosRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/reviews': typeof AdminReviewsRoute
+  '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -133,11 +151,13 @@ export interface FileRouteTypes {
     | '/book'
     | '/login'
     | '/orders'
+    | '/sales'
     | '/admin/customers'
     | '/admin/demos'
     | '/admin/orders'
     | '/admin/packages'
     | '/admin/reviews'
+    | '/admin/sales'
     | '/admin/settings'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -146,11 +166,13 @@ export interface FileRouteTypes {
     | '/book'
     | '/login'
     | '/orders'
+    | '/sales'
     | '/admin/customers'
     | '/admin/demos'
     | '/admin/orders'
     | '/admin/packages'
     | '/admin/reviews'
+    | '/admin/sales'
     | '/admin/settings'
     | '/admin'
   id:
@@ -160,11 +182,13 @@ export interface FileRouteTypes {
     | '/book'
     | '/login'
     | '/orders'
+    | '/sales'
     | '/admin/customers'
     | '/admin/demos'
     | '/admin/orders'
     | '/admin/packages'
     | '/admin/reviews'
+    | '/admin/sales'
     | '/admin/settings'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -175,10 +199,18 @@ export interface RootRouteChildren {
   BookRoute: typeof BookRoute
   LoginRoute: typeof LoginRoute
   OrdersRoute: typeof OrdersRoute
+  SalesRoute: typeof SalesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sales': {
+      id: '/sales'
+      path: '/sales'
+      fullPath: '/sales'
+      preLoaderRoute: typeof SalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/orders': {
       id: '/orders'
       path: '/orders'
@@ -228,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/sales': {
+      id: '/admin/sales'
+      path: '/sales'
+      fullPath: '/admin/sales'
+      preLoaderRoute: typeof AdminSalesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/reviews': {
       id: '/admin/reviews'
       path: '/reviews'
@@ -272,6 +311,7 @@ interface AdminRouteChildren {
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPackagesRoute: typeof AdminPackagesRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
+  AdminSalesRoute: typeof AdminSalesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -282,6 +322,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPackagesRoute: AdminPackagesRoute,
   AdminReviewsRoute: AdminReviewsRoute,
+  AdminSalesRoute: AdminSalesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -294,6 +335,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookRoute: BookRoute,
   LoginRoute: LoginRoute,
   OrdersRoute: OrdersRoute,
+  SalesRoute: SalesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
