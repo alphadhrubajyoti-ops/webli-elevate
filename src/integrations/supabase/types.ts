@@ -220,6 +220,42 @@ export type Database = {
         }
         Relationships: []
       }
+      sales: {
+        Row: {
+          created_at: string
+          description: string
+          destination_url: string | null
+          id: string
+          image_url: string | null
+          is_live: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          destination_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_live?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          destination_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_live?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
