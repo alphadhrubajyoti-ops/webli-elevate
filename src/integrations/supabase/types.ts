@@ -119,10 +119,12 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          discount_percentage: number
           features: Json
           id: string
           image_url: string | null
           is_published: boolean
+          original_price: number | null
           price_label: string | null
           sort_order: number
           tagline: string | null
@@ -132,10 +134,12 @@ export type Database = {
         Insert: {
           created_at?: string
           description: string
+          discount_percentage?: number
           features?: Json
           id?: string
           image_url?: string | null
           is_published?: boolean
+          original_price?: number | null
           price_label?: string | null
           sort_order?: number
           tagline?: string | null
@@ -145,10 +149,12 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
+          discount_percentage?: number
           features?: Json
           id?: string
           image_url?: string | null
           is_published?: boolean
+          original_price?: number | null
           price_label?: string | null
           sort_order?: number
           tagline?: string | null
