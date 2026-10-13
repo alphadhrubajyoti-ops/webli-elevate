@@ -7,6 +7,7 @@ import { fetchPublishedPackages, type Package } from "@/lib/webli/queries";
 import { getPublishedPackages } from "@/lib/webli/packages.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { whatsappUrl } from "@/lib/webli/constants";
+import { calculateFinalPrice, formatRupees } from "@/lib/webli/package-pricing";
 
 export function PackagesGrid() {
   const [pkgs, setPkgs] = useState<Package[] | null>(null);
@@ -134,11 +135,6 @@ function PackageCard({ pkg }: { pkg: Package }) {
             <Sparkles className="h-10 w-10 text-primary/60" />
           </div>
         )}
-        {pkg.price_label && (
-          <div className="absolute top-3 right-3 glass rounded-full px-3 py-1 text-xs font-semibold">
-            {pkg.price_label}
-          </div>
-        )}
       </div>
       <div className="p-6 flex flex-col flex-1">
         <h3 className="text-xl font-semibold tracking-tight">{pkg.title}</h3>
@@ -175,7 +171,48 @@ function PackageCard({ pkg }: { pkg: Package }) {
             </Button>
           </a>
         </div>
+        <PackagePrice
+          originalPrice={pkg.original_price}
+          discountPercentage={pkg.discount_percentage}
+          fallbackLabel={pkg.price_label}
+        />
       </div>
     </article>
+  );
+}
+
+function PackagePrice({
+  originalPrice,
+  discountPercentage,
+  fallbackLabel,
+}: {
+  originalPrice: number | null;
+  discountPercentage: number;
+  fallbackLabel: string | null;
+}) {
+  if (originalPrice === null || !Number.isFinite(originalPrice)) {
+    return fallbackLabel ? (
+      <div className="mt-5 border-t border-border/60 pt-4 text-right text-2xl font-semibold" aria-label={`Price ${fallbackLabel}`}>
+        {fallbackLabel}
+      </div>
+    ) : null;
+  }
+
+  const finalPrice = calculateFinalPrice(originalPrice, discountPercentage);
+  if (finalPrice === null) return null;
+  const hasDiscount = discountPercentage > 0 && originalPrice > 0;
+
+  return (
+    <div className="mt-5 flex flex-wrap items-end justify-end gap-x-3 gap-y-1 border-t border-border/60 pt-4">
+      {hasDiscount && (
+        <>
+          <span className="mb-1 text-sm text-muted-foreground line-through">{formatRupees(originalPrice)}</span>
+          <span className="mb-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">{discountPercentage}% OFF</span>
+        </>
+      )}
+      <span className="text-2xl font-semibold leading-none" aria-label={`Price ${formatRupees(finalPrice)}`}>
+        {formatRupees(finalPrice)}
+      </span>
+    </div>
   );
 }

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { calculateFinalPrice, formatRupees, numericPriceFromLabel } from "@/lib/webli/package-pricing";
 
 export const Route = createFileRoute("/admin/packages")({ component: PackagesAdmin });
 
@@ -18,6 +19,8 @@ type FormState = {
   tagline: string;
   description: string;
   price_label: string;
+  original_price: string;
+  discount_percentage: string;
   image_url: string;
   features: string;
   is_published: boolean;
@@ -29,6 +32,8 @@ const empty: FormState = {
   tagline: "",
   description: "",
   price_label: "",
+  original_price: "",
+  discount_percentage: "0",
   image_url: "",
   features: "",
   is_published: true,
@@ -64,6 +69,8 @@ function PackagesAdmin() {
       tagline: p.tagline ?? "",
       description: p.description,
       price_label: p.price_label ?? "",
+      original_price: String(p.original_price ?? numericPriceFromLabel(p.price_label) ?? ""),
+      discount_percentage: String(p.discount_percentage ?? 0),
       image_url: p.image_url ?? "",
       features: p.features.join("\n"),
       is_published: p.is_published,
@@ -74,13 +81,30 @@ function PackagesAdmin() {
 
   async function save() {
     if (!form.title || !form.description) { toast.error("Title and description are required."); return; }
+    const originalPrice = form.original_price.trim() === "" ? null : Number(form.original_price);
+    const discountPercentage = Number(form.discount_percentage);
+    if (originalPrice !== null && (!Number.isFinite(originalPrice) || originalPrice < 0)) {
+      toast.error("Original price must be zero or greater.");
+      return;
+    }
+    if (!Number.isFinite(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) {
+      toast.error("Discount must be between 0% and 100%.");
+      return;
+    }
+    if (discountPercentage > 0 && originalPrice === null) {
+      toast.error("Enter an original price before adding a discount.");
+      return;
+    }
     setSaving(true);
     try {
+      const finalPrice = originalPrice === null ? null : calculateFinalPrice(originalPrice, discountPercentage);
       const payload = {
         title: form.title,
         tagline: form.tagline || null,
         description: form.description,
-        price_label: form.price_label || null,
+        price_label: finalPrice === null ? (form.price_label || null) : formatRupees(finalPrice),
+        original_price: originalPrice,
+        discount_percentage: discountPercentage,
         image_url: form.image_url || null,
         features: form.features.split("\n").map((s) => s.trim()).filter(Boolean),
         is_published: form.is_published,
@@ -158,7 +182,7 @@ function PackagesAdmin() {
               <div className="font-semibold truncate">{p.title}</div>
               <div className="text-xs text-muted-foreground truncate">{p.tagline || p.description.slice(0, 60)}</div>
             </div>
-            <div className="text-sm">{p.price_label ?? "—"}</div>
+            <div className="text-sm">{formatPackagePrice(p.original_price, p.discount_percentage, p.price_label)}</div>
             <div>
               <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${p.is_published ? "bg-emerald-100 text-emerald-700" : "bg-muted text-muted-foreground"}`}>
                 <span className={`h-1.5 w-1.5 rounded-full ${p.is_published ? "bg-emerald-500" : "bg-muted-foreground"}`} />
@@ -195,9 +219,21 @@ function PackagesAdmin() {
                 <Field label="Tagline">
                   <Input value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="Perfect for launching fast" />
                 </Field>
-                <Field label="Price label">
-                  <Input value={form.price_label} onChange={(e) => setForm({ ...form, price_label: e.target.value })} placeholder="From ₹25,000" />
+                <Field label="Original price (₹)">
+                  <Input type="number" min="0" step="1" inputMode="decimal" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: e.target.value })} placeholder="25000" />
                 </Field>
+                <Field label="Discount (%)">
+                  <Input type="number" min="0" max="100" step="0.01" inputMode="decimal" value={form.discount_percentage} onChange={(e) => setForm({ ...form, discount_percentage: e.target.value })} />
+                </Field>
+                <div className="sm:col-span-2 rounded-lg border border-border/60 bg-secondary/40 p-4" aria-live="polite">
+                  <div className="text-xs font-semibold uppercase text-muted-foreground">Calculated final price</div>
+                  <div className="mt-1 text-2xl font-semibold">
+                    {form.original_price.trim() && calculateFinalPrice(Number(form.original_price), Number(form.discount_percentage)) !== null
+                      ? formatRupees(calculateFinalPrice(Number(form.original_price), Number(form.discount_percentage)) ?? 0)
+                      : "—"}
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">Updates as you change the original price or discount.</p>
+                </div>
                 <Field label="Sort order">
                   <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
                 </Field>
@@ -235,6 +271,12 @@ function PackagesAdmin() {
       )}
     </div>
   );
+}
+
+function formatPackagePrice(originalPrice: number | null, discountPercentage: number, fallback: string | null) {
+  if (originalPrice === null || !Number.isFinite(originalPrice)) return fallback ?? "—";
+  const finalPrice = calculateFinalPrice(originalPrice, discountPercentage);
+  return finalPrice === null ? fallback ?? "—" : formatRupees(finalPrice);
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
