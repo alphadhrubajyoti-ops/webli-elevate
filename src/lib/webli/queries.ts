@@ -6,6 +6,8 @@ export type Package = {
   tagline: string | null;
   description: string;
   price_label: string | null;
+  original_price: number | null;
+  discount_percentage: number;
   image_url: string | null;
   features: string[];
   is_published: boolean;
