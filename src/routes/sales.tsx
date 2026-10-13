@@ -55,7 +55,7 @@ function SalesPage() {
             <div className="py-16 text-muted-foreground" role="alert">
               Sales could not be loaded right now. Please try again later.
             </div>
-          ) : sales.length === 0 ? (
+          ) : (sales ?? []).length === 0 ? (
             <div className="flex min-h-72 flex-col items-center justify-center py-16 text-center">
               <div className="grid h-14 w-14 place-items-center rounded-full bg-primary/10 text-primary">
                 <Tag className="h-6 w-6" />
@@ -64,7 +64,7 @@ function SalesPage() {
             </div>
           ) : (
             <div className="divide-y divide-border/60">
-              {sales.map((sale) => (
+              {(sales ?? []).map((sale) => (
                 <article key={sale.id} className="grid gap-7 py-10 md:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)] md:items-center md:gap-12 sm:py-14">
                   <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-muted">
                     {sale.image_url ? (
