@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { calculateFinalPrice } from "./package-pricing";
+import { calculateFinalPrice } from "../src/lib/webli/package-pricing";
 
 describe("package pricing", () => {
   test("applies the entered discount percentage to the original price", () => {
